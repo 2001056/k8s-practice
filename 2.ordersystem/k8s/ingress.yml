@@ -1,0 +1,26 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ordersystem-ingress
+  namespace: chan-ns
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    
+spec:
+  tls: 
+  - hosts: 
+    - "server.nahcb572.shop"
+    secretName: server-nahcb572-shop-tls
+  rules:
+  - host: server.nahcb572.shop  # 설정하려는 도메인 이름.
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-service
+            port:
+              number: 80
+      
