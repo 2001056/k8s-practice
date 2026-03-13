@@ -21,7 +21,8 @@ public class JwtAuthFilter implements GlobalFilter {
             "/member/create",
             "/member/doLogin",
             "/member/refresh-at",
-            "/product/list"
+            "/product/list",
+            "/health"
     );
 
     private static final List<String> ADMIN_ONLY_PATH=List.of(
