@@ -19,7 +19,7 @@ public class OrderingController {
         this.orderingService = orderingService;
     }
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody List<OrderCreateDto> orderCreateDtoList, @RequestHeader("X-User-Email")String email) throws IOException {
+    public ResponseEntity<?> openfeign(@RequestBody List<OrderCreateDto> orderCreateDtoList, @RequestHeader("X-User-Email")String email) throws IOException {
         Long id = orderingService.openfeign(orderCreateDtoList, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
