@@ -35,3 +35,10 @@ spring:
     kafka-server: kafka-service:9092
     consumer:
       group-id: product-group
+aws:
+  s3:
+    bucket1: leebangbucket
+  credentials:
+    access-key: xxxxxx
+    secret-key: yyyyyy
+  region: ap-northeast-2
