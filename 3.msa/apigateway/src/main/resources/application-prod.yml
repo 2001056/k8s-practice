@@ -3,11 +3,11 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      enabled: false
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: prod
   application:
     name: api-gateway
   cloud:
@@ -29,20 +29,22 @@ spring:
           filters:
             # StripPrefix : 첫번째 접두어를 제거후에 member-service로 http요청 전달
             - StripPrefix=1
-          uri: lb://member-service
+            # k8s의 서비스명을 사용
+          uri: http://member-service
         - id: ordering-service
           predicates:
             - Path=/ordering-service/**
           filters:
             - StripPrefix=1
-          uri: lb://ordering-service
+           # k8s의 서비스명을 사용
+          uri: http://ordering-service
         - id: product-service
           predicates:
             - Path=/product-service/**
           filters:
 #            Strinfprefix : 첫번째 접두어를 제거후에 member-service로 http요청 전달
             - StripPrefix=1
-#            eureka에 등록된 meember-service라는 이름으로 http요청 라우팅(전달)
-          uri: lb://product-service
+            # k8s의 서비스명을 사용
+          uri: http://product-service
 jwt:
   secretKey: YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5
