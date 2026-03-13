@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-depl
+  namespace: chan-ns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+      - name: product
+        image: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com/dlqudcks-ns/product:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          limits: # resources 바로 아래 (공백 2칸)
+            cpu: "1"
+            memory: "500Mi"
+          requests: # resources 바로 아래 (공백 2칸)
+            cpu: "0.5"
+            memory: "250Mi"
+        env:
+          - name: DB_HOST # env 아래로 들여쓰기 (공백 2칸 추가)
+            valueFrom:
+              secretKeyRef:
+                name: ordersystem-secrets
+                key: DB_HOST
+          - name: DB_PW # env 아래로 들여쓰기 (공백 2칸 추가)
+            valueFrom:
+              secretKeyRef:
+                name: ordersystem-secrets
+                key: DB_PW
+        readinessProbe: # image, env와 세로 줄 맞춤
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+  namespace: chan-ns
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: product

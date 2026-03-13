@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ordering-depl
+  namespace: chan-ns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ordering
+  template:
+    metadata:
+      labels:
+        app: ordering
+    spec:
+      containers:
+      - name: ordering
+        image: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com/dlqudcks-ns/ordering:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: "1"
+            memory: "500Mi"
+          requests:
+            cpu: "0.5"
+            memory: "250Mi"
+        env: # env 필드는 container 아래에 위치
+          - name: DB_HOST # 리스트 항목이므로 2칸 들여쓰기
+            valueFrom:
+              secretKeyRef:
+                name: ordersystem-secrets
+                key: DB_HOST
+          - name: DB_PW # 리스트 항목이므로 2칸 들여쓰기
+            valueFrom:
+              secretKeyRef:
+                name: ordersystem-secrets
+                key: DB_PW
+        readinessProbe: # env와 같은 라인에 위치
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ordering-service
+  namespace: chan-ns
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: ordering
