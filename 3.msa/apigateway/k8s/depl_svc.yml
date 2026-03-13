@@ -33,7 +33,7 @@ spec:
             path: /health
             port: 8080
           # 컨테이너 시작 후 지연
-          initialDelaySeconds: 10
+          initialDelaySeconds: 15
           # 확인 반복 주기
           periodSeconds: 10
 ---
